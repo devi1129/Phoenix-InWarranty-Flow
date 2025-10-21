@@ -1,40 +1,35 @@
-name : Postman Collection Workflow
-# trigger 
+name: Postman Collection Workflow
+
 on:
-  push: # triggers when there is push to main branch
-    branches: [main]
+  push:
+    branches: [main] # triggers when there is push to main branch
   workflow_dispatch: # can be executed manually
   schedule:
-    -cron: 30 02 * * * # 8 AM IST everyday
-    -cron: 30 13 * * * #7:30 pm IST everyday
-    -cron: 00 06 * * 1-5 # 11:30 am IST Monday to Friday
+    - cron: '30 02 * * *'  # 8:00 AM IST everyday
+    - cron: '30 13 * * *'  # 7:30 PM IST everyday
+    - cron: '00 06 * * 1-5' # 11:30 AM IST Monday to Friday
 
- jobs: #various jobs that this workflow executes
-   run-tests: #name of job
-     runs-on: ubuntu-latest #virtual machine where tests executes
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest # virtual machine where tests execute
 
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
 
-     steps:
-       -name: checkout the code 
-        uses: actions/checkout@v5.0.0
-       -name: Install Node.js and npm
-        uses: actions/setup-node@v6.0.0
-        with: 
+      - name: Install Node.js and npm
+        uses: actions/setup-node@v4
+        with:
           node-version: '22'
-        -name: Install newman and html extra globally
-         run:  | #pipe operator used for multi line commands
-           npm install -g newman 
-           npm install -g newman-reporter-htmlextra
-        -name: Run the postman collection with newman
-         run:  |
-            newman run In\ warranty\ -flow\ Collection\ Copy.postman_collection.json  \
-            -e QA.postman_environment.json  \
-            -d testdata.csv  \
-            -r cli,htmlextra
 
-        
-        
+      - name: Install Newman and HTML extra reporter globally
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
 
-          
-    
-    
+      - name: Run the Postman collection with Newman
+        run: |
+          newman run "In warranty -flow Collection Copy.postman_collection.json" \
+          -e QA.postman_environment.json \
+          -d testdata.csv \
+          -r cli,htmlextra
