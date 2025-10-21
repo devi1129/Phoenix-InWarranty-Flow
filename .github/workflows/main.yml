@@ -36,6 +36,7 @@ jobs:
           --reporter-htmlextra-export newman/report.html
 
       - name: Upload Newman HTML report as artifact
+        if: always() # ensure upload runs even if tests fail
         uses: actions/upload-artifact@v4
         with:
           name: Newman-Report
