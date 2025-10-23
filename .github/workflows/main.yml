@@ -48,3 +48,21 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: newman/
+
+      - name: Send email notification
+        if: always()  # ensure email is sent even if tests fail
+        uses: dawidd6/action-send-mail@v6
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: Phoenix In-Warranty Flow Test Execution Notification
+          to: ${{ secrets.EMAIL_USERNAME_TO }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          body: |
+            Hi,
+            
+            Phoenix In-Warranty Flow tests have been executed.  
+            The report has been published and is available at:  
+             https://devi1129.github.io/Phoenix-InWarranty-Flow/
