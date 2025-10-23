@@ -63,6 +63,6 @@ jobs:
           body: |
             Hi,
             
-            Phoenix In-Warranty Flow tests have been executed.  
+            Phoenix In-Warranty Flow tests have been executed.
             The report has been published and is available at:  
              https://devi1129.github.io/Phoenix-InWarranty-Flow/
