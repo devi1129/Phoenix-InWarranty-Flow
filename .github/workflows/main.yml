@@ -33,7 +33,7 @@ jobs:
           -e QA.postman_environment.json \
           -d testdata.csv \
           -r cli,htmlextra \
-          --reporter-htmlextra-export newman/report.html
+          --reporter-htmlextra-export ./newman/index.html
 
       - name: Upload Newman HTML report as artifact
         if: always() # ensure upload runs even if tests fail
