@@ -11,7 +11,7 @@ on:
 
 jobs:
   run-tests:
-    runs-on: ec2-github-runner #ubuntu-latest # virtual machine where tests execute
+    runs-on: ec2-github-runner ##ubuntu-latest # virtual machine where tests execute
 
     steps:
       - name: Checkout the code
