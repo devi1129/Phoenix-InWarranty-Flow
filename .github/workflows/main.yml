@@ -3,7 +3,7 @@ name: Postman Collection Workflow
 on:
   push:
     branches: [main] # triggers when there is push to main branch
-  workflow_dispatch: # can be executed manually
+  workflow_dispatch: ## can be executed manually
  # schedule:
    # - cron: '30 02 * * *'  # 8:00 AM IST everyday
    # - cron: '30 13 * * *'  # 7:30 PM IST everyday
