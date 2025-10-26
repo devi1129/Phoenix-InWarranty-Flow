@@ -11,7 +11,7 @@ on:
 
 jobs:
   run-tests:
-    runs-on: self-hosted ##ubuntu-latest # virtual machine where tests execute
+    runs-on: self-hosted ##ubuntu-latest ## virtual machine where tests execute
 
     steps:
       - name: Checkout the code
