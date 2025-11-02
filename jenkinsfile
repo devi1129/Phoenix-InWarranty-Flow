@@ -1,0 +1,79 @@
+pipeline {
+  agent none
+
+  stages {
+    stage('Execute stages parallely') {
+      parallel {
+        
+        stage('Execute collection 1 via newman') {
+          agent { label 'postman-label' }
+          tools { nodejs 'NodeJs' }
+          steps {
+            git branch: 'main',
+                credentialsId: '34d74056-e160-41d2-97f9-9faa552d4967',
+                url: 'https://github.com/devi1129/Phoenix-InWarranty-Flow.git'
+
+            script {
+              try {
+                sh """
+                  newman run 'In warranty -flow Collection Copy.postman_collection.json' \
+                  -e QA.postman_environment.json \
+                  -d testdata.csv \
+                  -r cli,htmlextra \
+                  --reporter-htmlextra-export ./newman/report1.html
+                """
+              } catch(Exception e) {
+                echo "Error: ${e.getMessage()}"
+                currentBuild.result = 'UNSTABLE'
+              }
+              stash includes: 'newman/report1.html', name: 'Collection1'
+            }
+          }
+        }
+
+        stage('Execute collection 2 via newman') {
+          agent { label 'postman-label2' }
+          tools { nodejs 'NodeJs' }
+          steps {
+            git branch: 'main',
+                credentialsId: '34d74056-e160-41d2-97f9-9faa552d4967',
+                url: 'https://github.com/devi1129/Phoenix-InWarranty-Flow.git'
+
+            script {
+              try {
+                sh """
+                  newman run 'In warranty -flow Collection Copy.postman_collection.json' \
+                  -e QA.postman_environment.json \
+                  -d testdata.csv \
+                  -r cli,htmlextra \
+                  --reporter-htmlextra-export ./newman/report2.html
+                """
+              } catch(Exception e) {
+                echo "Error: ${e.getMessage()}"
+                currentBuild.result = 'UNSTABLE'
+              }
+              stash includes: 'newman/report2.html', name: 'Collection2'
+            }
+          }
+        }
+
+      }
+    }
+
+    stage('archive files') {
+      agent any
+      steps {
+        unstash 'Collection1'
+        unstash 'Collection2'
+        archiveArtifacts artifacts: 'newman/*.html', followSymlinks: false
+
+        emailext attachLog: true,
+        attachmentsPattern: 'newman/*.html',
+        body: '''Hi All,
+       PFA attached Postman test reports from Jenkins parallel pipeline.''',
+        subject: "Jenkins Build #${env.BUILD_NUMBER} - Parallel Test Reports",
+        to: 'dummyemail@gmail.com'
+      }
+    }
+  }
+}
